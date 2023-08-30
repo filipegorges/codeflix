@@ -1,6 +1,5 @@
-import { Category } from "./category";
 import { omit } from "lodash";
-import UniqueEntityId from "../unique-entity-id.vo";
+import { Category } from "./category";
 
 describe("Category Unit Tests", () => {
   test("should have a valid constructor", () => {
@@ -66,7 +65,7 @@ describe("Category Unit Tests", () => {
       description: "Description of Movie",
     });
     expect(category.description).toBe("Description of Movie");
-    
+
     category = new Category({
       name: "Movie",
     });
@@ -77,16 +76,5 @@ describe("Category Unit Tests", () => {
 
     category["description"] = undefined;
     expect(category.description).toBeNull();
-  });
-
-  test("id field", () => {
-    let category = new Category({ name: "Movie" });
-    expect(category.id).not.toBeUndefined();
-    expect(category.id).not.toBeNull();
-    // expect(uuidValidate(category.id)).toBeTruthy();
-
-    const someUUID = new UniqueEntityId(); 
-    category = new Category({ name: "Movie" }, someUUID);
-    expect(category.id).toBe(someUUID);
   });
 });

@@ -1,4 +1,4 @@
-import UniqueEntityId from "./unique-entity-id.vo";
+import UniqueEntityId from "../unique-entity-id.vo";
 
 function spyValidateMethod(): jest.SpyInstance<any, unknown[], any> {
     return jest.spyOn(UniqueEntityId.prototype as any, 'validate');
@@ -27,8 +27,8 @@ describe('UniqueEntityId', () => {
 
     it('should generate a uuid when no uuid is passed in constructor', () => {
         const validateSpy = spyValidateMethod();
-        const uniqueEntityId = new UniqueEntityId();
-        expect(uniqueEntityId.id).toBeDefined();
+        const uniqueEntityId = new UniqueEntityId().value;
+        expect(uniqueEntityId).toBeDefined();
         expect(validateSpy).toHaveBeenCalled();
     });
 });
