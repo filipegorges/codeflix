@@ -1,6 +1,7 @@
-import ValidatorRules from "@seedwork/validators/validator-rules";
-import UniqueEntityId from "@seedwork/value-objects/unique-entity-id.vo";
 import Entity from "../../../@seedwork/entity/entity";
+import { EntityValidationError } from "../../../@seedwork/errors/validation-error";
+import UniqueEntityId from "../../../@seedwork/value-objects/unique-entity-id.vo";
+import CategoryValidatorFactory from "../validators/category.validator";
 
 export type CategoryProperties = {
   name: string;
@@ -12,7 +13,7 @@ export type CategoryProperties = {
 export class Category extends Entity<CategoryProperties> {
   public readonly uniqueEntityId: UniqueEntityId;
   constructor(public readonly props: CategoryProperties, id?: UniqueEntityId) {
-    super(props, id)
+    super(props, id);
     Category.validate(props);
     this.description = this.props.description ?? null;
     this.props.is_active = this.props.is_active ?? true;
@@ -20,15 +21,23 @@ export class Category extends Entity<CategoryProperties> {
   }
 
   update(name: string, description: string): void {
-    Category.validate({name, description});
+    Category.validate({ name, description });
     this.name = name;
     this.description = description;
   }
 
-  static validate(props: Omit<CategoryProperties, 'created_at'>): void {
-    ValidatorRules.values(props.name, "name").required().string();
-    ValidatorRules.values(props.description, "description").required().string();
-    ValidatorRules.values(props.is_active, "is_active").boolean();
+  // static validate(props: Omit<CategoryProperties, "created_at">): void {
+  //   ValidatorRules.values(props.name, "name").required().string();
+  //   ValidatorRules.values(props.description, "description").required().string();
+  //   ValidatorRules.values(props.is_active, "is_active").boolean();
+  // }
+
+  static validate(props: CategoryProperties) {
+    const validator = CategoryValidatorFactory.create();
+    const isValid = validator.validate(props);
+    if (!isValid) {
+      throw new EntityValidationError(validator.errors);
+    }
   }
 
   activate(): void {

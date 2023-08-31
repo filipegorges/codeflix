@@ -3,7 +3,7 @@ import ValidatorFieldsInterface, {
   FieldsErrors,
 } from "./validator-fields-interface";
 
-export class ClassValidatorFields<PropsValidated>
+export abstract class ClassValidatorFields<PropsValidated>
   implements ValidatorFieldsInterface<PropsValidated>
 {
   errors: FieldsErrors = null;
@@ -13,13 +13,15 @@ export class ClassValidatorFields<PropsValidated>
     const errors = validateSync(data);
     if (errors.length) {
       this.errors = {};
-      errors.forEach((error) => {
+      for (const error of errors) {
         const field = error.property;
-        this.errors[field] = Object.keys(error.constraints);
-      });
+        this.errors[field] = Object.values(error.constraints);
+      }
     } else {
       this.validatedData = data;
     }
     return !errors.length;
   }
 }
+
+export default ClassValidatorFields;
